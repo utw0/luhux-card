@@ -1,6 +1,5 @@
-# luhux-card
 
-Headless Chrome kullanarak **alıntı kartları** ve **Spotify** PNG buffer olarak üretir. Discord botları için yapıldı, her Node projesinde çalışır.
+Headless Chrome kullanarak **alıntı kartları**, **Spotify kartları** ve **rank/seviye kartları** PNG buffer olarak üretir. Discord botları için yapıldı, her Node projesinde çalışır.
 
 ---
 
@@ -18,6 +17,9 @@ Headless Chrome kullanarak **alıntı kartları** ve **Spotify** PNG buffer olar
 ### Spotify Kartı
 > ![Spotify](https://github.com/utw0/luhux-card/blob/main/preview-spotify.png)
 
+### Rank Kartı
+> ![Rank](https://github.com/utw0/luhux-card/blob/main/preview-rank.png)
+
 ---
 
 ## Kurulum
@@ -26,7 +28,7 @@ Headless Chrome kullanarak **alıntı kartları** ve **Spotify** PNG buffer olar
 npm install luhux-card
 ```
 
-Puppeteer bağımlılık olarak gelir, ilk kurulumda bir Chromium ikili dosyası indirilir. Çoğu ortamda ekstra ayar gerekmez.
+`puppeteer-core` kullanır — Chromium **indirmez**, bilgisayarındaki kurulu Chrome'u otomatik bulur. Chrome kurulu değilse `PUPPETEER_EXECUTABLE_PATH` ortam değişkeniyle yolu belirtebilirsin.
 
 ---
 
@@ -205,6 +207,96 @@ if (status) {
 | `width` | `number` | `780` | kart genişliği |
 | `scale` | `number` | `2` | ekran görüntüsü ölçek çarpanı |
 | `outputPath` | `string` | — | belirtilirse dosyaya da kaydeder |
+
+---
+
+## Rank Kartı
+
+Kullanıcı seviye/XP kartı — avatar, sunucu sırası, istatistikler, XP progress bar ve rozetlerle.
+
+### Hızlı başlangıç
+
+```ts
+import { generateRankCard } from 'luhux-card';
+import fs from 'fs';
+
+const buffer = await generateRankCard({
+    displayName: 'luhux1337',
+    username: 'luhux',
+    rank: 4,
+    level: 38,
+    xp: 72_450,
+    levelStartXp: 50_000,
+    nextLevelXp: 100_000,
+    messageCount: 1284,
+    voiceHours: 62,
+    streak: 14,
+    accent: '#7c3aed',
+    badges: [
+        { label: 'Aktif Üye',     color: 'purple', emoji: '⚡' },
+        { label: 'Top 10',        color: 'gold',   emoji: '🏆' },
+        { label: 'Sohbet Ustası', color: 'blue',   emoji: '💬' },
+        { label: 'Ses Dostu',     color: 'green',  emoji: '🎵' },
+    ],
+});
+
+fs.writeFileSync('rank.png', buffer);
+```
+
+### Discord.js örneği
+
+```ts
+import { generateRankCard } from 'luhux-card';
+import { AttachmentBuilder } from 'discord.js';
+
+const buf = await generateRankCard({
+    avatarUrl: member.displayAvatarURL({ size: 512, extension: 'png' }),
+    displayName: member.displayName,
+    username: member.user.username,
+    rank: 4,           
+    level: 38,
+    xp: 72_450,
+    levelStartXp: 50_000,
+    nextLevelXp: 100_000,
+    messageCount: 1284,
+    voiceHours: 62,
+    streak: 14,
+    accent: '#7c3aed',
+});
+
+await interaction.reply({
+    files: [new AttachmentBuilder(buf, { name: 'rank.png' })],
+});
+```
+
+### Seçenekler (`RankCardOptions`)
+
+| Seçenek | Tip | Varsayılan | Açıklama |
+|---|---|---|---|
+| `displayName` | `string` | — | zorunlu, görünen ad |
+| `level` | `number` | — | zorunlu, mevcut seviye |
+| `xp` | `number` | — | zorunlu, mevcut toplam XP |
+| `nextLevelXp` | `number` | — | zorunlu, sonraki seviye için gereken XP |
+| `avatarUrl` | `string` | — | avatar URL (yoksa baş harf gösterilir) |
+| `username` | `string` | — | `@handle` olarak gösterilir |
+| `rank` | `number` | — | sunucu sırası |
+| `levelStartXp` | `number` | `0` | bu seviyenin başlangıç XP'si |
+| `messageCount` | `number` | — | toplam mesaj sayısı |
+| `voiceHours` | `number` | — | toplam ses saati |
+| `streak` | `number` | — | günlük aktiflik serisi |
+| `badges` | `RankCardBadge[]` | — | rozetler (aşağıya bak) |
+| `accent` | hex renk | `'#7c3aed'` | kart accent rengi |
+| `width` | `number` | `780` | kart genişliği |
+| `scale` | `number` | `2` | ekran görüntüsü ölçek çarpanı |
+| `outputPath` | `string` | — | belirtilirse dosyaya da kaydeder |
+
+### Rozetler (`RankCardBadge`)
+
+| Alan | Tip | Açıklama |
+|---|---|---|
+| `label` | `string` | rozet yazısı |
+| `color` | `'purple' \| 'gold' \| 'blue' \| 'green' \| 'red'` | rozet rengi |
+| `emoji` | `string` | isteğe bağlı emoji |
 
 ---
 
