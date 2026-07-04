@@ -2,6 +2,24 @@
 
 Headless Chrome kullanarak **alıntı kartları** ve **Spotify** PNG buffer olarak üretir. Discord botları için yapıldı, her Node projesinde çalışır.
 
+---
+
+## Önizleme
+
+### Alıntı Kartı — Sinema Stili
+> ![Sinema](https://github.com/utw0/luhux-card/blob/main/preview-cinema.png)
+
+### Alıntı Kartı — Poster Stili
+> ![Poster](https://github.com/utw0/luhux-card/blob/main/preview-poster.png)
+
+### Alıntı Kartı — Minimal Stili
+> ![Minimal](https://github.com/utw0/luhux-card/blob/main/preview-minimal.png)
+
+### Spotify Kartı
+> ![Spotify](https://github.com/utw0/luhux-card/blob/main/preview-spotify.png)
+
+---
+
 ## Kurulum
 
 ```bash
